@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include biggift *.css
+recursive-include biggift *.csv
+recursive-include biggift *.html
+recursive-include biggift *.ico
+recursive-include biggift *.js
+recursive-include biggift *.json
+recursive-include biggift *.md
+recursive-include biggift *.png
+recursive-include biggift *.py
+recursive-include biggift *.svg
+recursive-include biggift *.txt
+recursive-exclude biggift *.pyc

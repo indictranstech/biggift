@@ -43,7 +43,7 @@ app_license = "MIT"
 # ------------
 
 # before_install = "biggift.install.before_install"
-# after_install = "biggift.install.after_install"
+after_install = "biggift.install.after_install"
 
 # Desk Notifications
 # ------------------
@@ -62,6 +62,12 @@ app_license = "MIT"
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
+
+doctype_js = {
+	"Quotation": ["custom_scripts/quotation.js"],
+	"Sales Order": ["custom_scripts/sales_order.js"],
+	"Opportunity": ["custom_scripts/opportunity.js"]
+}
 
 # Document Events
 # ---------------
@@ -107,4 +113,3 @@ app_license = "MIT"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "biggift.event.get_events"
 # }
-

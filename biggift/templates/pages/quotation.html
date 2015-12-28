@@ -1,0 +1,246 @@
+{% block title %} {{_("Quotation Form")}} {% endblock %}
+
+{% block content %}
+<style>
+	.padding-left {
+		padding-left: 15px;
+		width:150px !important;
+	}
+
+	.control-label {
+		color: #333;
+		font-size: 16px
+		line-height: 1.42857143;
+		padding-left: 5px;
+		margin-top: 10px;
+	}
+
+	.image {
+		width: 100px;
+		background-color: #969692;
+		padding: 3px;
+	}
+
+	.app-listing{
+		border: 1px solid #d1d8dd;
+	}
+
+	.button-class {
+		margin-top: 10px;
+	}
+
+	.sas-design {
+		height: 500px;
+
+	}
+
+	.accepted{
+		color: green;
+		font-size: 14px;
+	}
+
+	.rejected{
+		color: red;
+		font-size: 14px;
+	}
+
+	.sas-design::-webkit-scrollbar-track{
+	 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	 	background-color: #F5F5F5;
+	}
+ 
+	.sas-design::-webkit-scrollbar{
+	 	width: 6px;
+	 	background-color: #F5F5F5;
+	}
+ 
+	.sas-design::-webkit-scrollbar-thumb{
+		background-color: #0088cc;
+	}
+
+	tbody tr td {
+		border: 1px solid #C4C4C7;
+	}
+
+</style>
+<!-- no-sidebar -->
+<form class="form-inline">
+	<div class="form col-xs-2 panel panel-info">
+		<div class="form-group panel-heading">
+			<label class="control-label ">Customer Name</label>
+			<input readonly type="text" class="form-control padding-left" id="customer_name">
+			<label class="control-label ">Employee Name</label>
+			<input class="form-control padding-left" id="employee_name">
+			<label class="control-label ">Email Id</label>
+			<input class="form-control padding-left" id="email_id">
+			<label class="control-label ">Designation</label>
+			<input class="form-control padding-left" id="designation">
+			<label class="control-label ">Companay</label>
+			<input class="form-control padding-left" id="company">
+			<label class="control-label ">Phone No</label>
+			<input class="form-control padding-left" id="phone">
+			<label class="control-label ">Feedback</label>
+			<textarea class="form-control padding-left" id="feedback"></textarea>
+		</div>
+	</div>
+	<div class="form col-xs-8">
+		<div class="col-xs-12 ">
+			<div class="row sas-design">
+				<table id="quotation-tab" class="table panel panel-primary">
+					<thead class="panel-heading" align="center">
+							<td class="col-md-1">Sr</td>
+							<td class="col-md-1">Status</td>
+							<td class="col-md-3">Description</td>		
+							<td class="col-md-1">Qty</td>
+							<td class="col-md-2">Rate</td>
+							<td class="col-md-2">Amount</td>
+							<td class="col-md-2"></td>
+					</thead>
+					<tbody  class="panel-body"></tbody>
+				</table>
+			</div>
+
+			<div class="row" style="margin-top:15px">
+				<div class="panel panel-primary">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-8 text-right">Net Total </div><div class="col-md-4 net-total"></div>
+						</div>
+						<div class="row taxes">
+						</div>
+						<div class="row">
+							<div class="col-md-8 text-right">Grand Total </div><div class="col-md-4 grand-total"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form col-xs-2">
+		<button type="submit" id="confirm"
+					class="btn btn-primary">{{_("Confirm")}}</button>
+	</div>
+
+</form>
+<script>
+
+$(document).ready(function() {
+	var args = {
+		name: get_url_arg("quotation_id"),
+		doctype: 'Quotation'
+	};
+	$('.sas-design').css("overflow", "auto");
+	$('.sas-design').hover(function(){
+		$(this).css("overflow", "auto")}, function(){
+			$(this).css("overflow", "hidden")
+	})
+
+	$("#reject").click(function(){
+		$('.status').removeClass("accepted")
+		$('.status').addClass("rejected")
+	})
+
+	frappe.call({
+		type: "POST",
+		method: "biggift.biggift.custom_methods.get_quotation_details",
+		freeze:true,
+		args: args,
+		callback: function(r){
+			if(r.message.status == true){
+				var doc = r.message.doc
+				var items = r.message.doc.items
+				var taxes = r.message.doc.taxes
+
+				$('#customer_name').val(doc.customer_name)
+
+				var table = $('#quotation-tab').find('tbody')
+				$.each(items, function(i,value){
+					var table_row = $('<tr ></tr>').appendTo(table);
+
+					var div_data = $(repl('<td align="center">%(idx)s</td><td><p class="status accepted" id="%(idx)s">Accepted<p></td>\
+					   <td><div class="value"><div class="pull-left image"><image class="image" src="%(image_view)s"></div><div class="details text-right"><p>%(item_name)s</p></div> <div class="details text-right"><p >%(description)s</p></div>\
+					   </div></td><td><div class="value"><div class="pull-left">%(uom)s</div>\
+					   <div class="text-right">%(qty)s</div></div></td>\
+					   <td> <div class="value text-right"><div>%(currency)s %(rate)s</div></div></td>\
+					   <td> <div class="value text-right"><div>%(currency)s %(amount)s</div></div></td>\
+					   <td> <div class="value" align="center"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div></td>', 
+					{'item_name': value.item_name, 'image_view': value.image, 'idx': value.idx, 
+					'uom': value.stock_uom,'description': value.description, 'qty': value.qty, 
+					'rate': value.rate, 'amount': value.amount, 'currency': doc.currency})).appendTo($(table_row));
+
+					if(!value.image){
+						$(div_data).find('.image').css("display", "none")
+						$(div_data).find('.details').removeClass('text-right')
+						$(div_data).find('.details').addClass('text-left')
+					}
+
+					$(div_data).find('.octicon-check').click(function(){
+						$(div_data).find('.status').addClass('accepted')
+						$(div_data).find('.status').removeClass('rejected')
+						$(div_data).find('.status').html('Accepted')
+					})
+
+					$(div_data).find('.octicon-x').click(function(){
+						$(div_data).find('.status').addClass('rejected')
+						$(div_data).find('.status').removeClass('accepted')
+						$(div_data).find('.status').html('Rejected')
+					})
+				})
+				$('.net-total').text(doc.currency+ ' '+doc.total)
+
+				$.each(taxes, function(i, value){
+					$(repl('<div class="col-md-8 text-right">%(description)s </div>\
+						<div class="col-md-4">%(currency)s %(amount)s</div>', 
+					{'description': value.description, 'currency': doc.currency, 
+					'amount': value.tax_amount_after_discount_amount})).appendTo($('.taxes'))
+				})
+
+				$('.grand-total').text(doc.currency+ ' '+doc.grand_total)
+				
+			}else{
+				$('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">Already Completed</h3></div></div>').appendTo($('.sas-design'))
+			}
+		}
+	})
+
+	$("#confirm").click(function() {
+		var completed_id_list = []
+		$.each($('.accepted'), function(i,v){
+			completed_id_list[i] = $(this).attr('id')
+		})
+
+		var args = {
+			quotation_id: get_url_arg("quotation_id"),
+			employee_name: $("#employee_name").val(),
+			employee_id: $("#email_id").val(),
+			designation: $("#designation").val(),
+			company_name: $("#company").val(),
+			phone_no: $("#phone").val(),
+			feedback: $("#feedback").val(),
+			completed_list: completed_id_list
+		}
+
+		frappe.call({
+			freeze:true,
+			type: "POST",
+			method: "biggift.biggift.custom_methods.customer_review_on_quotation",
+			btn: $("#confirm"),
+			args: {args: args},
+			callback: function(r){
+				$('.form-control').val("");
+				if(r.message) {
+					frappe.msgprint(__("Quotation Reviewed"));
+                    setTimeout(function() {
+						window.location.href = r.message;
+                    }, 2000);
+				}
+                if(r.exc) {
+                    frappe.msgprint(r.exc);
+                }
+			}
+		})	
+	});
+});
+
+</script>
+{% endblock %}

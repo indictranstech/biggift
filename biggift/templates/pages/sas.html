@@ -1,0 +1,170 @@
+{% block title %} {{_("SAS Form")}} {% endblock %}
+
+{% block content %}
+<style>
+	.padding-left {
+		padding-left: 15px;
+	}
+
+	.control-label {
+		color: #333;
+		font-size: 16px
+		line-height: 1.42857143;
+		padding-left: 5px;
+		margin-top: 10px;
+	}
+
+	.image {
+		width: 100px;
+		background-color: #969692;
+		padding: 3px;
+	}
+
+	.app-listing{
+		border: 1px solid #d1d8dd;
+	}
+
+	.button-class {
+		margin-top: 10px;
+	}
+
+	.sas-design {
+		height: 500px;
+
+	}
+
+	.accepted{
+		color: green;
+		font-size: 14px;
+	}
+
+	.rejected{
+		color: red;
+		font-size: 14px;
+	}
+
+</style>
+<!-- no-sidebar -->
+<form class="form-inline">
+	<div class="form col-xs-3">
+		<div class="form-group app-listing padding">
+			<label class="control-label ">Customer Name</label>
+			<input readonly type="text" class="form-control padding-left" id="customer_name">
+			<label class="control-label ">Employee Name</label>
+			<input class="form-control padding-left" id="employee_name">
+			<label class="control-label ">Email Id</label>
+			<input class="form-control padding-left" id="email_id">
+			<label class="control-label ">Designation</label>
+			<input class="form-control padding-left" id="designation">
+			<label class="control-label ">Companay</label>
+			<input class="form-control padding-left" id="company">
+			<label class="control-label ">Phone No</label>
+			<input class="form-control padding-left" id="phone">
+			<label class="control-label ">Feedback</label>
+			<textarea class="form-control padding-left" id="feedback"></textarea>
+		</div>
+	</div>
+	<div class="form col-xs-7">
+		<div class="col-xs-12 sas-design">
+			<div class="app-listing">
+				<div class="media">
+					<h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">SAS Design</h3>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form col-xs-2">
+		<button type="submit" id="confirm"
+					class="btn btn-primary">{{_("Confirm")}}</button>
+	</div>
+
+</form>
+<script>
+
+$(document).ready(function() {
+	var args = {
+		sas_id: get_url_arg("sas_id")
+	};
+
+	$('.sas-design').hover(function(){
+		$(this).css("overflow", "auto")}, function(){
+			$(this).css("overflow", "hidden")
+	})
+
+	$("#reject").click(function(){
+		$('.status').removeClass("accepted")
+		$('.status').addClass("rejected")
+	})
+
+	frappe.call({
+		type: "POST",
+		method: "biggift.biggift.doctype.sas.sas.get_sas_details",
+		freeze:true,
+		args: args,
+		callback: function(r){
+			if(r.message.status == true){
+				$('#customer_name').val(r.message.customer_name)
+				$.each(r.message.sas_item, function(i,value){
+					var media_div = $('<div class="app-listing padding"><div class="media"></div></div>').appendTo($('.sas-design'));
+					var div_data = $(repl('<div class="col-md-3"><image class="image" src="%(image_view)s"><p ><a style="color:#1C6194" href="%(image_view)s" target="_blank">View Design</a></p> <p class="status accepted" id="%(idx)s">Accepted<p></div><div class="col-md-7"><b>%(item_name)s</b> <p>%(design_description)s</p></div><div class="col-md-2 text-right"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div>', {'item_name': value.item_name, 'image_view': value.sas_image, 'idx': value.idx, 'design_description': value.design_description})).appendTo($(media_div).find('.media'));
+
+					$(div_data).find('.octicon-check').click(function(){
+						$(div_data).find('.status').addClass('accepted')
+						$(div_data).find('.status').removeClass('rejected')
+						$(div_data).find('.status').html('Accepted')
+					})
+
+					$(div_data).find('.octicon-x').click(function(){
+						$(div_data).find('.status').addClass('rejected')
+						$(div_data).find('.status').removeClass('accepted')
+						$(div_data).find('.status').html('Rejected')
+					})
+				})
+			}else{
+				$('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">Already Completed</h3></div></div>').appendTo($('.sas-design'))
+			}
+		}
+	})
+
+	$("#confirm").click(function() {
+		var completed_id_list = []
+		$.each($('.accepted'), function(i,v){
+			completed_id_list[i] = ($(this).attr('id'))
+		})
+
+		var args = {
+			sas_id: get_url_arg("sas_id") || 'SAS/00002',
+			employee_name: $("#employee_name").val(),
+			employee_id: $("#email_id").val(),
+			designation: $("#designation").val(),
+			company: $("#company").val(),
+			phone_no: $("#phone").val(),
+			feedback: $("#feedback").val(),
+			completed_list: completed_id_list
+		}
+
+		frappe.call({
+			freeze:true,
+			type: "POST",
+			method: "biggift.biggift.doctype.sas.sas.customer_review",
+			btn: $("#confirm"),
+			args: {args: args},
+			callback: function(r){
+				$('.form-control').val("");
+				if(r.message) {
+					frappe.msgprint(__("SAS Reviewed"));
+                    setTimeout(function() {
+						window.location.href = r.message;
+                    }, 2000);
+				}
+                if(r.exc) {
+                    frappe.msgprint(r.exc);
+                }
+			}
+		})	
+	});
+});
+
+</script>
+{% endblock %}

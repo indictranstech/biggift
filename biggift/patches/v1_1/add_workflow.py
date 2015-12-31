@@ -7,7 +7,7 @@ from frappe.utils import cstr, flt, cint
 from biggift.custom_fixtures import get_workflow_action, get_states, get_workflow
 from frappe import _, throw, msgprint
 
-def execute():
+def execute(args = None):
 	make_workflow_action()
 	make_workflow_state()
 	make_workflow()
@@ -44,6 +44,7 @@ def make_workflow():
 			doc = frappe.get_doc({
 					'doctype': 'Workflow',
 					'workflow_name': workflow,
+					'is_active': 1,
 					'document_type': workflow
 				})
 		add_workflow_state(doc, workflow, value)

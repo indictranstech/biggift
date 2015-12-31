@@ -8,14 +8,13 @@ def get_workflow_action():
 
 def get_states():
 	return [{'Accepted': 'Success'},{'Accepted By Manufacture': 'Primary'},{'Accepted By Production Team': 'Success'}
-				,{'Approved': 'Success'},{'Assign to Courier': 'Info'},{'Assign to Delivery Boy': 'Info'}
+				,{'Assign to Courier': 'Info'},{'Assign to Delivery Boy': 'Info'}
 				,{'Assign to Production Team': 'Info'},{'Assign to Sales Person': 'Info'},{'Customer Accepted': 'Success'}
 				,{'Customer Modified': 'Info'},{'Customer Rejected': 'Danger'},{'Customer Reviewed Quotation': 'Info' }
 				,{'Customer Reviewed SAS': 'Info'},{'Delivered to Customer': 'Info'}
 				,{'Delivered to Customer by Courier': 'Info'},{'Delivered to Customer by Delivery Boy': 'Info'}
-				,{'Delivered to Customer by Sales Person': 'Info'},{'Pending': 'Info'},{'QC Accepted': 'Success'}
-				,{'QC Rejected': 'Danger'},{'Quotation ready for review': 'Info'},{'Rejected': 'Danger'}
-				,{'Rejected By Production Team': 'Danger'},{'SAS Completed by Production Team': 'Info'}
+				,{'Delivered to Customer by Sales Person': 'Info'},{'QC Accepted': 'Success'}
+				,{'QC Rejected': 'Danger'},{'Quotation ready for review': 'Info'},{'Rejected By Production Team': 'Danger'},{'SAS Completed by Production Team': 'Info'}
 				,{'Work Order Completed by Production Team': 'Info'}]
 
 

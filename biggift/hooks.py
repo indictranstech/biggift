@@ -21,7 +21,7 @@ app_license = "MIT"
 # include js, css files in header of web template
 # web_include_css = "/assets/biggift/css/biggift.css"
 # web_include_js = "/assets/biggift/js/biggift.js"
-
+setup_wizard_complete = "biggift.patches.v1_1.add_workflow.execute"
 # Home Pages
 # ----------
 

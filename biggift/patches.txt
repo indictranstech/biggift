@@ -1,3 +1,0 @@
-execute:import unidecode # new requirement
-
-biggift.patches.v1_1.add_workflow

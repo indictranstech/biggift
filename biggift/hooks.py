@@ -42,6 +42,8 @@ app_license = "MIT"
 # Installation
 # ------------
 
+fixtures = ['Custom Field']
+
 # before_install = "biggift.install.before_install"
 after_install = "biggift.install.after_install"
 

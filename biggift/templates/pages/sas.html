@@ -107,7 +107,7 @@ $(document).ready(function() {
 				$('#customer_name').val(r.message.customer_name)
 				$.each(r.message.sas_item, function(i,value){
 					var media_div = $('<div class="app-listing padding"><div class="media"></div></div>').appendTo($('.sas-design'));
-					var div_data = $(repl('<div class="col-md-3"><image class="image" src="%(image_view)s"><p ><a style="color:#1C6194" href="%(image_view)s" target="_blank">View Design</a></p> <p class="status accepted" id="%(idx)s">Accepted<p></div><div class="col-md-7"><b>%(item_name)s</b> <p>%(design_description)s</p></div><div class="col-md-2 text-right"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div>', {'item_name': value.item_name, 'image_view': value.sas_image, 'idx': value.idx, 'design_description': value.design_description})).appendTo($(media_div).find('.media'));
+					var div_data = $(repl('<div class="col-md-3"><image class="image" src="%(image_view)s"><p ><a style="color:#1C6194" href="%(image_view)s" target="_blank">View Design</a></p> <p class="status" id="%(idx)s">Pending<p></div><div class="col-md-7"><b>%(item_name)s</b> <p>%(design_description)s</p></div><div class="col-md-2 text-right"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div>', {'item_name': value.item_name, 'image_view': value.sas_image, 'idx': value.idx, 'design_description': value.design_description})).appendTo($(media_div).find('.media'));
 
 					$(div_data).find('.octicon-check').click(function(){
 						$(div_data).find('.status').addClass('accepted')

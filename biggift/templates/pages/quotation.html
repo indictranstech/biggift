@@ -157,7 +157,7 @@ $(document).ready(function() {
 				$.each(items, function(i,value){
 					var table_row = $('<tr ></tr>').appendTo(table);
 
-					var div_data = $(repl('<td align="center">%(idx)s</td><td><p class="status accepted" id="%(idx)s">Accepted<p></td>\
+					var div_data = $(repl('<td align="center">%(idx)s</td><td><p class="status" id="%(idx)s">Pending<p></td>\
 					   <td><div class="value"><div class="pull-left image"><image class="image" src="%(image_view)s"></div><div class="details text-right"><p>%(item_name)s</p></div> <div class="details text-right"><p >%(description)s</p></div>\
 					   </div></td><td><div class="value"><div class="pull-left">%(uom)s</div>\
 					   <div class="text-right">%(qty)s</div></div></td>\

@@ -10,12 +10,28 @@ def get_quotation_details(doctype, name):
 	response = {'status': False, 'msg':'Error'}
 	if name:
 		doc = frappe.get_doc(doctype, name)
-		# if sas.workflow_state == 'QC Accepted':
-		response = {
-			'status': True,
-			'doc': doc
-		}
+		if doc.workflow_state == 'Quotation ready for review':
+			response = {
+				'status': True,
+				'email_id': frappe.db.get_value('Contact', {'customer': doc.customer}, 'email_id'),
+				'doc': doc
+			}
 	return response
+
+@frappe.whitelist(allow_guest=True)
+def get_dn_details(doctype, name):
+	response = {'status': False, 'error_msg':'ID {0} is unknown'.format(name)}
+	if name:
+		doc = frappe.get_doc(doctype, name)
+		if doc.docstatus == 1:
+			response = {
+				'status': True,
+				'email_id': frappe.db.get_value('Contact', {'customer': doc.customer}, 'email_id'),
+				'doc': doc
+			}
+		else:
+			response['error_msg'] = 'Customer has reviewed this form'
+	return response	
 
 @frappe.whitelist(allow_guest=True)
 def customer_review_on_quotation(args):
@@ -48,6 +64,23 @@ def update_quotation_status(doc, completed_list):
 		if cstr(data.idx) in completed_list:
 			data.status = '<p style="color:green">Completed</p>'
 
+@frappe.whitelist(allow_guest=True)
+def customer_review_on_dn(args):
+	args = json.loads(args)
+	get_dn_doc(args)
+	return "/"
+
+def get_dn_doc(args):
+	doc = frappe.get_doc('Delivery Note', args.get('dn_id'))
+	update_dn_status(doc, args.get('completed_list'))
+	doc.save()
+
+def update_dn_status(doc, completed_list):
+	for data in doc.items:
+		data.customer_review_on_delivery = '<p style="color:red">Not Received</p>'
+		if cstr(data.idx) in completed_list:
+			data.customer_review_on_delivery = '<p style="color:green">Received</p>'
+
 @frappe.whitelist()
 def make_work_order(source_name, target_doc=None):
 	def set_missing_values(source, target):
@@ -55,6 +88,7 @@ def make_work_order(source_name, target_doc=None):
 		target.posting_date = nowdate()
 		target.feedback = ""
 		target.work_order_to = 'Customer'
+		target.sales_order_no = source.name
 
 	def update_item(source, target, source_parent):
 		target.work_order_attach = frappe.db.get_value('Quotation Item', {'item_code': source.item_code, 'parent': source.prevdoc_docname}, 'image')
@@ -62,9 +96,11 @@ def make_work_order(source_name, target_doc=None):
 		target.item_name = source.item_name
 		target.description = source.description 
 		target.qty = source.qty
+		target.rate = source.rate
 		target.prevdoc_doctype = source.parenttype
 		target.prevdoc_docname = source.parent
 		target.status = ''
+		target.so_detail = source.name
 
 	doclist = get_mapped_doc("Sales Order", source_name, {
 		"Sales Order": {
@@ -73,7 +109,10 @@ def make_work_order(source_name, target_doc=None):
 		"Sales Order Item": {
 			"doctype": "Work Order Item",
 			"postprocess": update_item
-		}
+		},
+		"Sales Taxes and Charges": {
+			"doctype": "Sales Taxes and Charges"
+		},
 	}, target_doc, set_missing_values)
 
 	return doclist

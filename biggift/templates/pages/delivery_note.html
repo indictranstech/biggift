@@ -123,8 +123,8 @@
 
 $(document).ready(function() {
 	var args = {
-		name: get_url_arg("quotation_id"),
-		doctype: 'Quotation'
+		name: get_url_arg("dn_id"),
+		doctype: 'Delivery Note'
 	};
 	$('.sas-design').css("overflow", "auto");
 	$('.sas-design').hover(function(){
@@ -139,7 +139,7 @@ $(document).ready(function() {
 
 	frappe.call({
 		type: "POST",
-		method: "biggift.biggift.custom_methods.get_quotation_details",
+		method: "biggift.biggift.custom_methods.get_dn_details",
 		freeze:true,
 		args: args,
 		callback: function(r){
@@ -174,13 +174,13 @@ $(document).ready(function() {
 
 					$(div_data).find('.octicon-check').click(function(){
 						$(div_data).find('.status').addClass('accepted')
-						$(div_data).find('.status').html('Accepted')
+						$(div_data).find('.status').html('Received')
 						prepare_class_to_remove(div_data, ['rejected', 'pending'])
 					})
 
 					$(div_data).find('.octicon-x').click(function(){
 						$(div_data).find('.status').addClass('rejected')
-						$(div_data).find('.status').html('Rejected')
+						$(div_data).find('.status').html('Not Received')
 						prepare_class_to_remove(div_data, ['accepted', 'pending'])
 					})
 
@@ -206,7 +206,7 @@ $(document).ready(function() {
 				$('.grand-total').text(doc.currency+ ' '+doc.grand_total)
 				
 			}else{
-				$('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">Customer has reviewed this form</h3></div></div>').appendTo($('.sas-design'))
+				$(repl('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">%(msg)s</h3></div></div>', {'msg': r.message.error_msg})).appendTo($('.sas-design'))
 
 				$('#confirm').hide();
 				$('.tax-table').hide();
@@ -221,7 +221,7 @@ $(document).ready(function() {
 		})
 
 		var args = {
-			quotation_id: get_url_arg("quotation_id"),
+			dn_id: get_url_arg("dn_id"),
 			employee_name: $("#employee_name").val(),
 			employee_id: $("#email_id").val(),
 			designation: $("#designation").val(),
@@ -238,13 +238,13 @@ $(document).ready(function() {
 		frappe.call({
 			freeze:true,
 			type: "POST",
-			method: "biggift.biggift.custom_methods.customer_review_on_quotation",
+			method: "biggift.biggift.custom_methods.customer_review_on_dn",
 			btn: $("#confirm"),
 			args: {args: args},
 			callback: function(r){
 				$('.form-control').val("");
 				if(r.message) {
-					frappe.msgprint(__("Quotation Reviewed"));
+					frappe.msgprint(__("Delivery Note Reviewed"));
                     setTimeout(function() {
 						window.location.href = r.message;
                     }, 2000);

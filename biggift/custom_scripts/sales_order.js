@@ -1,6 +1,6 @@
 frappe.ui.form.on('Sales Order', 'refresh', function(frm, cdt, cdn){
 	var doc = frm.doc;
-	if(doc.docstatus ==1){
+	if(doc.docstatus ==1 && !doc.work_order_name){
 		cur_frm.add_custom_button(__('Make Work Order'), frm.cscript.make_work_order).addClass('btn-primary')
 	}
 })

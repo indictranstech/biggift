@@ -45,7 +45,6 @@
 
 </style>
 <!-- no-sidebar -->
-<form class="form-inline">
 	<div class="form col-xs-3">
 		<div class="form-group app-listing padding">
 			<label class="control-label ">Customer Name</label>
@@ -74,12 +73,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="form col-xs-2">
-		<button type="submit" id="confirm"
+	<div class="form col-xs-2 form-group">
+		<button  type="submit" id="confirm"
 					class="btn btn-primary">{{_("Confirm")}}</button>
 	</div>
-
-</form>
 <script>
 
 $(document).ready(function() {
@@ -105,36 +102,45 @@ $(document).ready(function() {
 		callback: function(r){
 			if(r.message.status == true){
 				$('#customer_name').val(r.message.customer_name)
+				$('#email_id').val(r.message.email_id)
+
 				$.each(r.message.sas_item, function(i,value){
 					var media_div = $('<div class="app-listing padding"><div class="media"></div></div>').appendTo($('.sas-design'));
-					var div_data = $(repl('<div class="col-md-3"><image class="image" src="%(image_view)s"><p ><a style="color:#1C6194" href="%(image_view)s" target="_blank">View Design</a></p> <p class="status" id="%(idx)s">Pending<p></div><div class="col-md-7"><b>%(item_name)s</b> <p>%(design_description)s</p></div><div class="col-md-2 text-right"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div>', {'item_name': value.item_name, 'image_view': value.sas_image, 'idx': value.idx, 'design_description': value.design_description})).appendTo($(media_div).find('.media'));
+					var div_data = $(repl('<div class="col-md-3"><image class="image" src="%(image_view)s"><p ><a style="color:#1C6194" href="%(image_view)s" target="_blank">View Design</a></p> <p class="status pending" id="%(idx)s">Pending<p></div><div class="col-md-7"><b>%(item_name)s</b> <p>%(design_description)s</p></div><div class="col-md-2 text-right"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div>', {'item_name': value.item_name, 'image_view': value.sas_image, 'idx': value.idx, 'design_description': value.design_description})).appendTo($(media_div).find('.media'));
 
 					$(div_data).find('.octicon-check').click(function(){
 						$(div_data).find('.status').addClass('accepted')
-						$(div_data).find('.status').removeClass('rejected')
 						$(div_data).find('.status').html('Accepted')
+						prepare_class_to_remove(div_data, ['rejected', 'pending'])
 					})
 
 					$(div_data).find('.octicon-x').click(function(){
 						$(div_data).find('.status').addClass('rejected')
-						$(div_data).find('.status').removeClass('accepted')
 						$(div_data).find('.status').html('Rejected')
+						prepare_class_to_remove(div_data, ['accepted', 'pending'])
 					})
+
+					function prepare_class_to_remove(div_data, class_list){
+						$.each(class_list, function(i, v){
+							remove_class(div_data, v)
+						})
+					}
+
+					function remove_class(div_data, class_name){
+						$(div_data).find('.status').removeClass(class_name)
+					}
 				})
 			}else{
-				$('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">Already Completed</h3></div></div>').appendTo($('.sas-design'))
+				$('<div class="app-listing padding"><div class="media"><h3 class="text-muted" style="padding: 0px 15px; font-weight: 300;">Customer has reviewed this form.</h3></div></div>').appendTo($('.sas-design'))
 			}
 		}
 	})
 
 	$("#confirm").click(function() {
 		var completed_id_list = []
-		$.each($('.accepted'), function(i,v){
-			completed_id_list[i] = ($(this).attr('id'))
-		})
 
 		var args = {
-			sas_id: get_url_arg("sas_id") || 'SAS/00002',
+			sas_id: get_url_arg("sas_id") || '',
 			employee_name: $("#employee_name").val(),
 			employee_id: $("#email_id").val(),
 			designation: $("#designation").val(),
@@ -143,6 +149,14 @@ $(document).ready(function() {
 			feedback: $("#feedback").val(),
 			completed_list: completed_id_list
 		}
+		
+		$.each($('.accepted'), function(i,v){
+			completed_id_list[i] = ($(this).attr('id'))
+		})
+
+		msg = validate_methods()
+
+		if(msg == false){return;}
 
 		frappe.call({
 			freeze:true,
@@ -164,6 +178,33 @@ $(document).ready(function() {
 			}
 		})	
 	});
+
+	function validate_methods(){
+		msg = true
+
+		$.each($('.pending'), function(i,v){
+			row_id = {'row_id': $(this).attr('id')}
+			frappe.msgprint(repl("Accept or Reject is require for row no %(row_id)s", row_id));
+			msg =false
+			return msg;
+		})
+
+		if(msg == true){
+			var compulsory_fields = {'Employee Name':'employee_name', 'Email Id':'email_id', 'Feedback':'feedback'}
+
+			$.each(compulsory_fields, function(parameter, value){
+				if(!$('#'+ value).val()){
+					frappe.msgprint(repl("Mandatory field: %(key)s", {'key': parameter}));
+					msg = false;
+					return;
+				}
+
+				if(msg == false){return msg;}
+			})
+		}
+		return msg
+	}
+
 });
 
 </script>

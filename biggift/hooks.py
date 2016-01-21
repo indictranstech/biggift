@@ -68,7 +68,8 @@ after_install = "biggift.install.after_install"
 doctype_js = {
 	"Quotation": ["custom_scripts/quotation.js"],
 	"Sales Order": ["custom_scripts/sales_order.js"],
-	"Opportunity": ["custom_scripts/opportunity.js"]
+	"Opportunity": ["custom_scripts/opportunity.js"],
+	"Delivery Note": ["custom_scripts/delivery_note.js"]
 }
 
 # Document Events
@@ -82,6 +83,12 @@ doctype_js = {
 # 		"on_trash": "method"
 #	}
 # }
+
+doc_events = {
+	"Delivery Note":{
+		"on_submit": "biggift.custom_folder.update_qty_prevdoc.update_wo_qty"
+	}
+}
 
 # Scheduled Tasks
 # ---------------

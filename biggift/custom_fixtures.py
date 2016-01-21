@@ -15,7 +15,8 @@ def get_states():
 				,{'Delivered to Customer by Courier': 'Info'},{'Delivered to Customer by Delivery Boy': 'Info'}
 				,{'Delivered to Customer by Sales Person': 'Info'},{'QC Accepted': 'Success'}
 				,{'QC Rejected': 'Danger'},{'Quotation ready for review': 'Info'},{'Rejected By Production Team': 'Danger'},{'SAS Completed by Production Team': 'Info'}
-				,{'Work Order Completed by Production Team': 'Info'}]
+				,{'Work Order Completed by Production Team': 'Info'}, {'QC Accepted Ready For Dispatch': 'Info'}
+				,{'Production Completed':'Success'}]
 
 
 def get_workflow():
@@ -31,23 +32,23 @@ def get_workflow():
 									{'state': 'Delivered to Customer by Delivery Boy', 'doc_status': 0, 'allow_edit': 'Delivery Boy'},
 									{'state': 'Delivered to Customer by Courier', 'doc_status': 0, 'allow_edit': 'Sales User'},
 									{'state': 'Delivered to Customer by Sales Person', 'doc_status': 0, 'allow_edit': 'Sales User'}]},
-						{'transitions':[{'state': 'Assign to Production Team', 'action': 'Accept', 'next_state': 'Accepted By Production Team', 'allowed': 'Manufacturing User'},
-										{'state': 'Assign to Production Team', 'action': 'Reject', 'next_state': 'Assign to Sales Person', 'allowed': 'Manufacturing User'},
-										{'state': 'Accepted By Production Team', 'action': 'Assign to Sales Person', 'next_state': 'Assign to Sales Person', 'allowed': 'Manufacturing User'},
-										{'state': 'Accepted By Production Team', 'action': 'Assign to Courier', 'next_state': 'Assign to Courier', 'allowed': 'Manufacturing User'},
-										{'state': 'Accepted By Production Team', 'action': 'Assign to Delivery Boy', 'next_state': 'Assign to Delivery Boy', 'allowed': 'Manufacturing User'},
-										{'state': 'Assign to Sales Person', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Sales Person', 'allowed': 'Sales User'},
-										{'state': 'Assign to Courier', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Courier', 'allowed': 'Sales User'},
-										{'state': 'Assign to Delivery Boy', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Delivery Boy', 'allowed': 'Delivery Boy'},
-										{'state': 'Delivered to Customer by Sales Person', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Sales Person', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Sales Person', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Courier', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Courier', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Courier', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
-										{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'}
+					{'transitions':[{'state': 'Assign to Production Team', 'action': 'Accept', 'next_state': 'Accepted By Production Team', 'allowed': 'Manufacturing User'},
+									{'state': 'Assign to Production Team', 'action': 'Reject', 'next_state': 'Assign to Sales Person', 'allowed': 'Manufacturing User'},
+									{'state': 'Accepted By Production Team', 'action': 'Assign to Sales Person', 'next_state': 'Assign to Sales Person', 'allowed': 'Manufacturing User'},
+									{'state': 'Accepted By Production Team', 'action': 'Assign to Courier', 'next_state': 'Assign to Courier', 'allowed': 'Manufacturing User'},
+									{'state': 'Accepted By Production Team', 'action': 'Assign to Delivery Boy', 'next_state': 'Assign to Delivery Boy', 'allowed': 'Manufacturing User'},
+									{'state': 'Assign to Sales Person', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Sales Person', 'allowed': 'Sales User'},
+									{'state': 'Assign to Courier', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Courier', 'allowed': 'Sales User'},
+									{'state': 'Assign to Delivery Boy', 'action': 'Delivery to Customer', 'next_state': 'Delivered to Customer by Delivery Boy', 'allowed': 'Delivery Boy'},
+									{'state': 'Delivered to Customer by Sales Person', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Sales Person', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Sales Person', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Courier', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Courier', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Courier', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Accept', 'next_state': 'Accepted', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Modify', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
+									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'}
 										]}],
 			'SAS': [{'states': [{'state': 'Assign to Production Team', 'doc_status': 0, 'allow_edit': 'Manufacturing User'}, 
 								{'state': 'SAS Completed by Production Team', 'doc_status': 0, 'allow_edit': 'Manufacturing User'},
@@ -113,7 +114,8 @@ def get_workflow():
 									{'state': 'Delivered to Customer by Courier', 'action': 'Assign to Production Team', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
 									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Accept', 'next_state': 'Customer Accepted', 'allowed': 'Sales User'},
 									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Reject', 'next_state': 'Customer Rejected', 'allowed': 'Sales User'},
-									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Assign to Production Team', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'}]
+									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Assign to Production Team', 'next_state': 'Assign to Production Team', 'allowed': 'Sales User'},
+									{'state': 'QC Accepted Ready For Dispatch', 'action': 'Complete', 'next_state': 'Production Completed', 'allowed': 'Manufacturing User'}]
 					}],
 			'Quotation': [{'states':[{'state': 'Quotation ready for review', 'doc_status': 0, 'allow_edit': 'Sales User'},
 									  {'state': 'Customer Accepted', 'doc_status': 1, 'allow_edit': 'Sales User'},
@@ -122,11 +124,11 @@ def get_workflow():
 									  {'state': 'Customer Modified', 'doc_status': 0, 'allow_edit': 'Sales User'},
 									  {'state': 'Rejected', 'doc_status': 0, 'allow_edit': 'Sales User'},
 									]}, 
-							{'transitions':[{'state': 'Customer Reviewed Quotation', 'action': 'Accept', 'next_state': 'Customer Accepted', 'allowed': 'Sales User'},
-											{'state': 'Customer Reviewed Quotation', 'action': 'Modify', 'next_state': 'Customer Modified', 'allowed': 'Sales User'},
-											{'state': 'Customer Reviewed Quotation', 'action': 'Reject', 'next_state': 'Customer Rejected', 'allowed': 'Sales User'},
-											{'state': 'Customer Modified', 'action': 'Complete', 'next_state': 'Quotation ready for review', 'allowed': 'Sales User'},
-											{'state': 'Customer Modified', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
-											{'state': 'Customer Rejected', 'action': 'Complete', 'next_state': 'Quotation ready for review', 'allowed': 'Sales User'},
-											{'state': 'Customer Rejected', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'}]
-							}]}
+					{'transitions':[{'state': 'Customer Reviewed Quotation', 'action': 'Accept', 'next_state': 'Customer Accepted', 'allowed': 'Sales User'},
+									{'state': 'Customer Reviewed Quotation', 'action': 'Modify', 'next_state': 'Customer Modified', 'allowed': 'Sales User'},
+									{'state': 'Customer Reviewed Quotation', 'action': 'Reject', 'next_state': 'Customer Rejected', 'allowed': 'Sales User'},
+									{'state': 'Customer Modified', 'action': 'Complete', 'next_state': 'Quotation ready for review', 'allowed': 'Sales User'},
+									{'state': 'Customer Modified', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'},
+									{'state': 'Customer Rejected', 'action': 'Complete', 'next_state': 'Quotation ready for review', 'allowed': 'Sales User'},
+									{'state': 'Customer Rejected', 'action': 'Reject', 'next_state': 'Rejected', 'allowed': 'Sales User'}]
+					}]}

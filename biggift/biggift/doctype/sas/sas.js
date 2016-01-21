@@ -16,7 +16,11 @@ cur_frm.cscript.send_email_to_customer = function(){
 	frappe.call({
 		freeze: true,
 		method:"biggift.biggift.send_email_to_customer.send_sas_link_to_customer",
-		args: {sas_id: doc.name, 'customer': client, 'sas_to': doc.sas_to}
+		args: {sas_id: doc.name, 'customer': client, 'sas_to': doc.sas_to},
+		callback: function(r){
+			cur_frm.set_value('email_sent_to_customer', 'Yes')
+			cur_frm.save()
+		}
 	})
 }
 

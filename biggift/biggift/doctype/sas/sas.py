@@ -24,6 +24,7 @@ def get_sas_details(sas_id):
 			response = {
 				'status': True,
 				'customer_name': sas.customer_name,
+				'email_id': frappe.db.get_value('Contact', {'customer': sas.customer}, 'email_id'),
 				'sas_item': sas.sas_item
 			}
 	return response
@@ -44,6 +45,7 @@ def update_customer_review(sas, args):
 	update_sas_status(sas, args.get('completed_list'))
 	workflow_state = get_workflow_state(sas.sas_item, args.get('completed_list'))
 	sas.workflow_state = workflow_state
+	if workflow_state != 'Customer Accepted': sas.email_sent_to_customer = 'No'
 	sas.save(ignore_permissions=True)
 	if sas.workflow_state == 'Customer Accepted':
 		sas.submit()

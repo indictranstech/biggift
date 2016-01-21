@@ -12,13 +12,20 @@ def send_sas_link_to_customer(sas_id, customer, sas_to):
 	link = get_url("/sas?sas_id=" + sas_id)
 	request_to = sas_to.lower()
 	prepare_data_for_mail(link, customer, args, request_to)
-
+	return
 
 @frappe.whitelist()
 def send_quotation_link_to_customer(quotation_id, customer, quotation_to):
 	args = {'subject_name': 'Quotation Form'}
 	link = get_url("/quotation?quotation_id=" + quotation_id)
 	request_to = quotation_to.lower()
+	prepare_data_for_mail(link, customer, args, request_to)
+
+@frappe.whitelist()
+def send_deliverynote_link_to_customer(dn_id, customer, delivery_note_to):
+	args = {'subject_name': 'Delivery Note Form'}
+	link = get_url("/delivery_note?dn_id=" + dn_id)
+	request_to = delivery_note_to.lower()
 	prepare_data_for_mail(link, customer, args, request_to)
 
 def prepare_data_for_mail(link, customer, args, request_to):

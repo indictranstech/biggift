@@ -25,7 +25,7 @@ def make_workflow_state():
 	states = get_states()
 	for data in states:
 		for state, style in data.items():
-			if not frappe.db.get_value('Workflow State'):
+			if not frappe.db.get_value('Workflow State', state, 'name'):
 				wfs = frappe.get_doc({
 					'doctype': 'Workflow State',
 					'workflow_state_name': state,

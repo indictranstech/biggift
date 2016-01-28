@@ -59,7 +59,6 @@ def make_delivery_note(source_name, target_doc=None):
 
 	def update_item(source, target, source_parent):
 		target.image = source.work_order_attach
-		target.image_view = source.wo_image_view
 		target.item_code = source.item_code
 		target.item_name = source.item_name
 		target.description = source.description 

@@ -1,3 +1,4 @@
+{% extends "templates/web.html" %}
 {% block title %} {{_("Quotation Form")}} {% endblock %}
 
 {% block content %}
@@ -121,7 +122,7 @@
 	</div>
 <script>
 
-$(document).ready(function() {
+frappe.ready(function() {
 	var args = {
 		name: get_url_arg("quotation_id"),
 		doctype: 'Quotation'

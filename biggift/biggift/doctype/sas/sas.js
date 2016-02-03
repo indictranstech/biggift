@@ -1,12 +1,27 @@
+{% include 'custom_scripts/validate_user.js' %}
+
 frappe.ui.form.on('SAS', 'refresh', function(frm, cdt, cdn){
 	var doc = frm.doc
 	if (doc.workflow_state == 'QC Accepted' && in_list(user_roles, 'Sales User')){
     	cur_frm.add_custom_button(__('Email SAS to client'), frm.cscript.send_email_to_customer).addClass("btn-primary");
   	}
 
+  	if(doc.docstatus==0 && !doc.__islocal){
+    	frm.cscript.validate_user()
+  	}
+
   	if(doc.docstatus ==1 && in_list(user_roles, 'Sales User')){
   		cur_frm.add_custom_button(__('Make Work Order'), frm.cscript.make_work_order).addClass('btn-primary')
   	}
+
+  	if(doc.workflow_state == 'SAS Completed by Production Team' && doc.qc_status!= 'SAS is assigned to QC team'){
+		cur_frm.set_value('qc_status', 'SAS is assigned to QC team')
+		cur_frm.save()
+	}
+	if((doc.workflow_state == 'QC Accepted' || doc.workflow_state == 'QC Rejected') && doc.qc_status!='Qc Done'){
+		cur_frm.set_value('qc_status', 'Qc Done')
+		cur_frm.save()
+	}
 })
 
 cur_frm.cscript.send_email_to_customer = function(){

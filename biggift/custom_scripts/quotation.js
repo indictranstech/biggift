@@ -1,5 +1,12 @@
+{% include 'custom_scripts/validate_user.js' %}
+
 frappe.ui.form.on('Quotation', 'refresh', function(frm, cdt, cdn){
 	var doc = frm.doc; 
+
+	if(doc.docstatus==0 && !doc.__islocal){
+    	frm.cscript.validate_user()
+  	}
+
 	if(doc.workflow_state == 'Quotation ready for review' && in_list(user_roles, 'Sales User'))
 		cur_frm.add_custom_button(__("Send Quotation to Customer"), frm.cscript.send_quotation).addClass('btn-primary')
 })

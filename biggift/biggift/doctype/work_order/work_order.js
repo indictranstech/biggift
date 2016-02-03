@@ -1,3 +1,5 @@
+{% include 'custom_scripts/validate_user.js' %}
+
 frappe.ui.form.on('Work Order Item', 'work_order_attach', function(frm, cdt, cdn){
 	var d = locals[cdt][cdn]
 	refresh_field('wo_image_view', d.name, 'work_order_item')
@@ -10,6 +12,10 @@ frappe.ui.form.on('Work Order', 'refresh', function(frm, cdt, cdn){
   	}
   	if(!doc.__islocal){
   		frm.cscript.make_delivery(frm, cdt, cdn)
+  	}
+
+  	if(doc.docstatus==0 && !doc.__islocal){
+    	frm.cscript.validate_user()
   	}
 
   	if(doc.order_type == 'Sales' && doc.workflow_state == 'QC Accepted'){

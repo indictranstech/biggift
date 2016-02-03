@@ -11,7 +11,7 @@ def send_sas_link_to_customer(sas_id, customer, sas_to):
 	args = {'subject_name': 'SAS Form'}
 	link = get_url("/sas?sas_id=" + sas_id)
 	request_to = sas_to.lower()
-	prepare_data_for_mail(link, customer, args, request_to)
+	prepare_data_for_mail(link, customer, args, request_to, "SAS")
 	return
 
 @frappe.whitelist()
@@ -19,19 +19,20 @@ def send_quotation_link_to_customer(quotation_id, customer, quotation_to):
 	args = {'subject_name': 'Quotation Form'}
 	link = get_url("/quotation?quotation_id=" + quotation_id)
 	request_to = quotation_to.lower()
-	prepare_data_for_mail(link, customer, args, request_to)
+	prepare_data_for_mail(link, customer, args, request_to, "Quotation")
 
 @frappe.whitelist()
 def send_deliverynote_link_to_customer(dn_id, customer, delivery_note_to):
 	args = {'subject_name': 'Delivery Note Form'}
 	link = get_url("/delivery_note?dn_id=" + dn_id)
 	request_to = delivery_note_to.lower()
-	prepare_data_for_mail(link, customer, args, request_to)
+	prepare_data_for_mail(link, customer, args, request_to, "Delivery Note")
 
-def prepare_data_for_mail(link, customer, args, request_to):
+def prepare_data_for_mail(link, customer, args, request_to, doctype):
 	contact = frappe.db.get_value('Contact', {request_to: customer, 'is_primary_contact': 1}, '*', as_dict=1) if request_to == 'customer' else frappe.db.get_value('Lead', customer, '*', as_dict=1)
 	if contact:
 		args = customer_args_for_email(contact, link, args) if request_to == 'customer' else lead_args_for_email(contact, link, args)
+		args['doctype'] = doctype
 		send_login_mail(_(args.get('subject_name')), 'templates/emails/customer_form.html', args)
 
 def customer_args_for_email(contact, link, args):

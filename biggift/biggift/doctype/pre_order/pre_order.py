@@ -55,3 +55,17 @@ def make_sas(source_name, target_doc=None):
 	}, target_doc, set_missing_values)
 
 	return doclist
+
+def get_sales_user(doctype, txt, searchfield, start, page_len, filters):
+	return frappe.db.sql(""" select distinct parent from `tabUserRole`
+		where role='Sales User' and parent like '%(txt)s' 
+		limit %(start)s, %(page_len)s"""%{'txt': '%%%s%%'%(txt), 'start': start, 'page_len': page_len}, debug=1)
+
+
+@frappe.whitelist()	
+def validate_user(workflow_state, user_roles, doctype):
+	import json
+	role = frappe.db.get_value('Workflow Document State', {'parent': doctype, 'state': workflow_state}, 'allow_edit')
+	if role not in json.loads(user_roles):
+		return {'status': False}
+	return {'status': True}

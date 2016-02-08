@@ -1,4 +1,2 @@
-execute:frappe.db.sql("update `tabWorkflow Transition` set next_state = 'Rejected' where parent  = 'Pre Order' and state = 'Assign to Production Team' and action = 'Reject'")
-execute:frappe.db.sql("update `tabWorkflow Transition` set action = 'Reject' where parent  = 'SAS' and state = 'Assign to Production Team' and next_state = 'Rejected By Production Team'")
-execute:frappe.db.sql("update `tabWorkflow Document State` set allow_edit = 'Sales User' where parent='SAS' and state in ('QC Accepted', 'Customer Rejected', 'Customer Modified')")
-execute:frappe.db.sql("update `tabWorkflow Document State` set allow_edit = 'Quality Manager' where parent='SAS' and state ='SAS Completed by Production Team'")
+biggift.patches.v1_1.delete_workflow
+biggift.patches.v1_1.add_workflow

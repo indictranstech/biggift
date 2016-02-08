@@ -6,9 +6,13 @@ cur_frm.cscript.validate_user = function(){
       freeze: true,
       callback: function(r){
       	if(r.message.status == false){
-      		frappe.msgprint("You don't have permission to make the changes")
       		cur_frm.disable_save();
-      	}
+      	}else{
+          if(doc.latest_comment == 'Unread' && doc.comment_user_name != user){
+            cur_frm.set_value('latest_comment', 'Read')
+            cur_frm.save()
+          }
+        }
       } 
   })
 }

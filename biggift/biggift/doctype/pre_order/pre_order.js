@@ -10,7 +10,7 @@ frappe.ui.form.on('Pre Order', 'refresh', function(frm, cdt, cdn){
   //   cur_frm.add_custom_button(__('Make PO'), frm.cscript.make_purchase_order).addClass("btn-primary");
   // }
 
-  if (doc.docstatus == 1 && in_list(user_roles, 'Sales User')){
+  if (doc.workflow_state == 'Accepted' && in_list(user_roles, 'Sales User')){
     cur_frm.add_custom_button(__('Make SAS'), frm.cscript.make_sas).addClass("btn-primary");
   }
 })

@@ -51,7 +51,7 @@ after_install = "biggift.install.after_install"
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "biggift.notifications.get_notification_config"
+notification_config = "biggift.custom_folder.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -87,6 +87,9 @@ doctype_js = {
 doc_events = {
 	"Delivery Note":{
 		"on_submit": "biggift.custom_folder.update_qty_prevdoc.update_wo_qty"
+	},
+	"Comment":{
+		"on_update": "biggift.custom_folder.hooks_methods.new_comment"
 	}
 }
 

@@ -47,8 +47,6 @@ def update_customer_review(sas, args):
 	sas.workflow_state = workflow_state
 	if workflow_state != 'Customer Accepted': sas.email_sent_to_customer = 'Yes'
 	sas.save(ignore_permissions=True)
-	if sas.workflow_state == 'Customer Accepted':
-		sas.submit()
 
 def update_employee_details(sas, args):
 	for key, val in args.items():

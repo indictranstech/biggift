@@ -10,7 +10,7 @@ frappe.ui.form.on('SAS', 'refresh', function(frm, cdt, cdn){
     	frm.cscript.validate_user()
   	}
 
-  	if(doc.docstatus ==1 && in_list(user_roles, 'Sales User')){
+  	if(doc.docstatus ==0 && in_list(user_roles, 'Sales User')){
   		cur_frm.add_custom_button(__('Make Work Order'), frm.cscript.make_work_order).addClass('btn-primary')
   	}
 

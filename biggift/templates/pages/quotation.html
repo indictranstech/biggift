@@ -31,7 +31,8 @@
 	}
 
 	.sas-design {
-		height: 300px;
+		height: auto;
+		margin-left: 2px;
 
 	}
 
@@ -63,68 +64,113 @@
 		border: 1px solid #C4C4C7;
 	}
 
+	#letterhead {
+		text-align : left;
+		width:auto;
+	}
+
+	.comp-header{
+		margin-top: 30px;
+		font-family: "FreeSerif";
+		font-size: 40px;
+		text-align: center;
+		font-weight: bold;
+	}
+
+	.phn{
+		text-align: right;
+		color: #D57F13;
+		font-size: 20px;
+	}
+
+	.amt {
+		text-align: right;
+	}
+
 </style>
 <!-- no-sidebar -->
-	<div class="form col-xs-2 panel panel-info" style = "border: 1px solid #B0B2E4">
-		<div class="form-group panel-heading">
-			<label class="control-label ">Customer Name</label>
-			<input readonly type="text" class="form-control padding-left" id="customer_name">
-			<label class="control-label ">Employee Name</label>
-			<input class="form-control padding-left" id="employee_name">
-			<label class="control-label ">Email Id</label>
-			<input class="form-control padding-left" id="email_id">
-			<label class="control-label ">Designation</label>
-			<input class="form-control padding-left" id="designation">
-			<label class="control-label ">Company</label>
-			<input class="form-control padding-left" id="company">
-			<label class="control-label ">Phone No</label>
-			<input class="form-control padding-left" id="phone">
-			<label class="control-label ">Feedback</label>
-			<textarea class="form-control padding-left" id="feedback"></textarea>
+<h1>Quotation Form</h1>
+	
+	<div class="col-xs-12">
+		<div class="col-md-2">
+			<div id="letterhead"></div>
+		</div>
+		<div class="col-md-10">
+			<div style="text-align:right" class="row">
+				<button align="right" type="submit" id="confirm"
+					class="btn btn-primary">{{_("Confirm")}}</button> 
+			</div>
+			<div class="row">
+				<div class="comp-header">MULTI MARKETING</div>
+			</div>
+			<div class="row">
+				<div class="phn">7848990990</div>
+			</div>
 		</div>
 	</div>
-	<div class="form col-xs-8">
-		<div class="col-xs-12 ">
+
+	<div style="margin-top:5px" class="col-xs-12">
+		<div class="form col-xs-2 panel panel-info" style = "border: 1px solid #B0B2E4">
+			<div class="form-group panel-heading">
+				<label class="control-label ">Customer Name</label>
+				<input readonly type="text" class="form-control padding-left" id="customer_name">
+				<label class="control-label ">Employee Name</label>
+				<input class="form-control padding-left" id="employee_name">
+				<label class="control-label ">Email Id</label>
+				<input class="form-control padding-left" id="email_id">
+				<label class="control-label ">Designation</label>
+				<input class="form-control padding-left" id="designation">
+				<label class="control-label ">Company</label>
+				<input class="form-control padding-left" id="company">
+				<label class="control-label ">Phone No</label>
+				<input class="form-control padding-left" id="phone">
+				<label class="control-label ">Feedback</label>
+				<textarea class="form-control padding-left" id="feedback"></textarea>
+			</div>
+		</div>
+		<div class="form col-md-10">
 			<div class="row sas-design">
 				<table id="quotation-tab" class="table panel panel-primary">
 					<thead class="panel-heading" align="center">
 							<td class="col-md-1">Sr</td>
 							<td class="col-md-1">Status</td>
-							<td class="col-md-3">Description</td>		
+							<td class="col-md-2">Image</td>
+							<td class="col-md-2">Description</td>		
 							<td class="col-md-1">Qty</td>
-							<td class="col-md-2">Rate</td>
+							<td class="col-md-1">Rate</td>
 							<td class="col-md-2">Amount</td>
 							<td class="col-md-2"></td>
 					</thead>
 					<tbody  class="panel-body"></tbody>
 				</table>
 			</div>
-
 			<div class="row tax-table" style="margin-top:15px">
-				<div class="panel panel-primary">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-md-8 text-right">Net Total </div><div class="col-md-4 net-total"></div>
-						</div>
-						<div class="row taxes">
-						</div>
-						<div class="row">
-							<div class="col-md-8 text-right">Grand Total </div><div class="col-md-4 grand-total"></div>
-						</div>
-					</div>
+				<div class="row">
+					<div class="col-md-10 text-right">Net Total </div><div class="col-md-2 net-total amt"></div>
+				</div>
+				<div class="row taxes">
+				</div>
+				<div class="row">
+					<div class="col-md-10 text-right">Grand Total </div><div class="col-md-2 grand-total amt"></div>
+				</div>
+			</div>
+		
+			<div style="margin-top:15px" class="row">
+				<div class="col-md-3 text-right">
+					<label>Terms and Condition</label> 
+				</div>
+				<div class="col-md-9 terms">
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="form col-xs-2">
-		<button type="submit" id="confirm"
-					class="btn btn-primary">{{_("Confirm")}}</button>
-	</div>
+	
+	
 <script>
 
 frappe.ready(function() {
 	var args = {
-		name: get_url_arg("quotation_id"),
+		name: get_url_arg("quotation_id") || 'QTN-00016',
 		doctype: 'Quotation'
 	};
 	$('.sas-design').css("overflow", "auto");
@@ -157,15 +203,25 @@ frappe.ready(function() {
 					var table_row = $('<tr ></tr>').appendTo(table);
 
 					var div_data = $(repl('<td align="center">%(idx)s</td><td><p class="status pending" id="%(idx)s">Pending<p></td>\
-					   <td><div class="value"><div class="pull-left image"><image class="image" src="%(image_view)s"></div><div class="details text-right"><p>%(item_name)s</p></div> <div class="details text-right"><p >%(description)s</p></div>\
-					   </div></td><td><div class="value"><div class="pull-left">%(uom)s</div>\
-					   <div class="text-right">%(qty)s</div></div></td>\
+						<td><image class="image" src="%(image_view)s">\
+						<p><a class="image" src="%(image_view)s">View Image</a></p></td>\
+					   <td><div class="value"><div class="details text-right"><p>%(item_name)s</p></div> <div class="details text-right"><p >%(description)s</p></div>\
+					   </div></td><td><div class="value"><div class="pull-left">%(qty)s</div>\
+					   <div class="text-right">%(uom)s</div></div></td>\
 					   <td> <div class="value text-right"><div>%(currency)s %(rate)s</div></div></td>\
 					   <td> <div class="value text-right"><div>%(currency)s %(amount)s</div></div></td>\
 					   <td> <div class="value" align="center"><span class="mega-octicon octicon-check" style="color:#5AB20F"></span>  <span id="reject" class="mega-octicon octicon-x" style="color:red; padding-left:10px"></span></div></td>', 
 					{'item_name': value.item_name, 'image_view': value.image, 'idx': value.idx, 
 					'uom': value.stock_uom,'description': value.description, 'qty': value.qty, 
 					'rate': value.rate, 'amount': value.amount, 'currency': doc.currency})).appendTo($(table_row));
+
+					if(r.message.letterhead){
+						$('#letterhead').html(r.message.letterhead)
+					}
+
+					if(doc.terms){
+						$(".terms").html(doc.terms)
+					}
 
 					if(!value.image){
 						$(div_data).find('.image').css("display", "none")
@@ -198,8 +254,8 @@ frappe.ready(function() {
 				$('.net-total').text(doc.currency+ ' '+doc.total)
 
 				$.each(taxes, function(i, value){
-					$(repl('<div class="col-md-8 text-right">%(description)s </div>\
-						<div class="col-md-4">%(currency)s %(amount)s</div>', 
+					$(repl('<div class="col-md-10 text-right">%(description)s </div>\
+						<div class="col-md-2">%(currency)s %(amount)s</div>', 
 					{'description': value.description, 'currency': doc.currency, 
 					'amount': value.tax_amount_after_discount_amount})).appendTo($('.taxes'))
 				})

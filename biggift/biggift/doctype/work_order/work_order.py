@@ -36,8 +36,8 @@ def make_quotation(source_name, target_doc=None):
 		target.description = source.description 
 		target.qty = source.qty
 		target.status = ''
-		target.prevdoc_doctype = source.parenttype
-		target.prevdoc_docname = source.parent
+		target.prevdoc_doctype = ''
+		target.prevdoc_docname = ''
 
 	doclist = get_mapped_doc("Work Order", source_name, {
 		"Work Order": {

@@ -35,11 +35,13 @@ def customer_review(args):
 	get_sas_doc(args)
 	return "/"
 
+@frappe.whitelist(allow_guest=True)
 def get_sas_doc(args):
 	sas = frappe.get_doc('SAS', args.get('sas_id'))
 	if sas.workflow_state == 'QC Accepted':
 		update_customer_review(sas, args)
 
+@frappe.whitelist(allow_guest=True)
 def update_customer_review(sas, args):
 	update_employee_details(sas, args)
 	update_sas_status(sas, args.get('completed_list'))
@@ -47,12 +49,16 @@ def update_customer_review(sas, args):
 	sas.workflow_state = workflow_state
 	if workflow_state != 'Customer Accepted': sas.email_sent_to_customer = 'Yes'
 	sas.save(ignore_permissions=True)
+	if sas.workflow_state == 'Customer Accepted':
+  		sas.submit()
 
+@frappe.whitelist(allow_guest=True)
 def update_employee_details(sas, args):
 	for key, val in args.items():
 		if key not in ['completed_list', 'sas_id']:
 			setattr(sas, key, val)
 
+@frappe.whitelist(allow_guest=True)
 def update_sas_status(sas, completed_list):
 	for data in sas.sas_item:
 		data.status = '<p style="color:red">Rejected</p>'

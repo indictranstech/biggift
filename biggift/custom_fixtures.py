@@ -117,7 +117,7 @@ def get_workflow():
 									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Accept', 'next_state': 'Customer Accepted', 'allowed': 'Sales User'},
 									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Reject', 'next_state': 'Customer Rejected', 'allowed': 'Sales User'},
 									{'state': 'Delivered to Customer by Delivery Boy', 'action': 'Assigned to Production Team', 'next_state': 'Assigned to Production Team', 'allowed': 'Sales User'},
-									{'state': 'QC Accepted Ready For Dispatch', 'action': 'Complete', 'next_state': 'Production Completed', 'allowed': 'Manufacturing User'}]
+									{'state': 'QC Accepted Ready For Dispatch', 'action': 'Complete', 'next_state': 'Production Completed', 'allowed': 'Sales User'}]
 					}],
 			'Quotation': [{'states':[{'state': 'Quotation ready for review', 'doc_status': 0, 'allow_edit': 'Sales User'},
 									  {'state': 'Customer Accepted', 'doc_status': 1, 'allow_edit': 'Sales User'},

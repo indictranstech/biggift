@@ -14,7 +14,8 @@ def get_quotation_details(doctype, name):
 			response = {
 				'status': True,
 				'email_id': frappe.db.get_value('Contact', {'customer': doc.customer}, 'email_id'),
-				'doc': doc
+				'doc': doc,
+				'letterhead': frappe.db.get_value('Letter Head', doc.letter_head, 'content')
 			}
 	return response
 

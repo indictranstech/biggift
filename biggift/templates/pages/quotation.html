@@ -112,6 +112,7 @@
 	<div style="margin-top:5px" class="col-xs-12">
 		<div class="form col-xs-2 panel panel-info" style = "border: 1px solid #B0B2E4">
 			<div class="form-group panel-heading">
+				<input readonly type="hidden" class="form-control padding-left" id="Sales_person">
 				<label class="control-label ">Customer Name</label>
 				<input readonly type="text" class="form-control padding-left" id="customer_name">
 				<label class="control-label ">Employee Name</label>
@@ -195,6 +196,7 @@ frappe.ready(function() {
 				var items = r.message.doc.items
 				var taxes = r.message.doc.taxes
 
+				$('#Sales_person').val(doc.modified_by)
 				$('#customer_name').val(doc.customer_name)
 				$('#email_id').val(r.message.email_id)
 
@@ -285,7 +287,8 @@ frappe.ready(function() {
 			company_name: $("#company").val(),
 			phone_no: $("#phone").val(),
 			feedback: $("#feedback").val(),
-			completed_list: completed_id_list
+			completed_list: completed_id_list,
+			Sales_person: $("#Sales_person").val(),
 		}
 
 		msg = validate_methods()

@@ -38,6 +38,8 @@ def get_dn_details(doctype, name):
 def customer_review_on_quotation(args):
 	args = json.loads(args)
 	get_quotation_doc(args)
+	send_thanks_email(args)
+	sendmail_to_sales_person(args)
 	return "/"
 
 def get_quotation_doc(args):
@@ -64,6 +66,29 @@ def update_quotation_status(doc, completed_list):
 		data.status = '<p style="color:red">Rejected</p>'
 		if cstr(data.idx) in completed_list:
 			data.status = '<p style="color:green">Completed</p>'
+
+def send_thanks_email(args):
+	msg="""
+			Quotation {0} has Confirmed.
+			Thanks For Your Confirmation,
+			We will come back soon.
+		""".format(args.get('quotation_id'))
+	
+	sub="""Quotation Confirmation"""
+	send_email(args.get('employee_id'), msg, sub)
+
+def sendmail_to_sales_person(args):
+	msg="""
+			Quotation {0} has Confirmed by,
+			Customer: {1}
+			ID: {2}
+		""".format(args.get('quotation_id'), args.get('employee_name'), args.get('employee_id'))
+	
+	sub="""Quotation Confirmation"""
+	send_email(args.get('Sales_person'), msg, sub)
+
+def send_email(emailid, msg, sub):
+	frappe.sendmail(emailid, subject=sub, message = msg)
 
 @frappe.whitelist(allow_guest=True)
 def customer_review_on_dn(args):
